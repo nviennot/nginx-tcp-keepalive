@@ -7,6 +7,9 @@
 #include <ngx_config.h>
 #include <ngx_core.h>
 #include <ngx_http.h>
+#include <sys/socket.h>
+
+extern ngx_module_t ngx_http_tcp_keepalive_module;
 
 typedef struct {
 	ngx_flag_t	enable;
@@ -14,6 +17,46 @@ typedef struct {
 	time_t		tcp_keepidle;
 	time_t		tcp_keepintvl;
 } ngx_http_tcp_keepalive_conf_t;
+
+static ngx_int_t
+ngx_http_tcp_keepalive_handler(ngx_http_request_t *r)
+{
+	ngx_http_tcp_keepalive_conf_t *conf;
+	int fd = r->connection->fd;
+
+	conf = ngx_http_get_module_loc_conf(r, ngx_http_tcp_keepalive_module);
+	if (!conf->enable)
+		return NGX_DECLINED;
+
+#define SSO(level, optname, val) ({					\
+	if (setsockopt(fd, level, optname, &(val), sizeof(val)) < 0)	\
+		return NGX_ERROR;					\
+})
+	SSO(SOL_SOCKET, SO_KEEPALIVE, conf->enable);
+	SSO(SOL_TCP, TCP_KEEPCNT, conf->tcp_keepcnt);
+	SSO(SOL_TCP, TCP_KEEPIDLE, conf->tcp_keepidle);
+	SSO(SOL_TCP, TCP_KEEPINTVL, conf->tcp_keepintvl);
+#undef SSO
+
+	return NGX_OK;
+}
+
+static ngx_int_t
+ngx_http_tcp_keepalive_init(ngx_conf_t *cf)
+{
+	ngx_http_handler_pt *h;
+	ngx_http_core_main_conf_t *cmcf;
+
+	cmcf = ngx_http_conf_get_module_main_conf(cf, ngx_http_core_module);
+
+	h = ngx_array_push(&cmcf->phases[NGX_HTTP_CONTENT_PHASE].handlers);
+	if (h == NULL)
+		return NGX_ERROR;
+
+	*h = ngx_http_tcp_keepalive_handler;
+
+	return NGX_OK;
+}
 
 static void *
 ngx_http_tcp_keepalive_create_loc_conf(ngx_conf_t *cf)
