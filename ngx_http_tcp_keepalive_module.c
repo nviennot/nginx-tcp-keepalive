@@ -29,8 +29,11 @@ ngx_http_tcp_keepalive_handler(ngx_http_request_t *r)
 		return NGX_DECLINED;
 
 #define SSO(level, optname, val) ({					\
-	if (setsockopt(fd, level, optname, &(val), sizeof(val)) < 0)	\
-		return NGX_ERROR;					\
+	if (setsockopt(fd, level, optname, &(val), sizeof(int)) < 0) {	\
+		ngx_log_error(NGX_LOG_ERR, r->connection->log, 0,	\
+			      "setsockopt(" #level ", " #optname ", %d) failed", val);	\
+		return NGX_HTTP_INTERNAL_SERVER_ERROR;			\
+	}								\
 })
 	SSO(SOL_SOCKET, SO_KEEPALIVE, conf->enable);
 	SSO(SOL_TCP, TCP_KEEPCNT, conf->tcp_keepcnt);
