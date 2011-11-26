@@ -94,7 +94,7 @@ static ngx_command_t ngx_http_tcp_keepalive_commands[] = {
 		ngx_string("tcp_keepalive"),
 		NGX_HTTP_MAIN_CONF|NGX_HTTP_SRV_CONF|NGX_HTTP_LOC_CONF|NGX_CONF_FLAG,
 		ngx_conf_set_flag_slot,
-		NGX_HTTP_SRV_CONF_OFFSET,
+		NGX_HTTP_LOC_CONF_OFFSET,
 		offsetof(ngx_http_tcp_keepalive_conf_t, enable),
 		NULL
 	},
@@ -102,7 +102,7 @@ static ngx_command_t ngx_http_tcp_keepalive_commands[] = {
 		ngx_string("tcp_keepcnt"),
 		NGX_HTTP_MAIN_CONF|NGX_HTTP_SRV_CONF|NGX_HTTP_LOC_CONF|NGX_CONF_TAKE1,
 		ngx_conf_set_num_slot,
-		NGX_HTTP_SRV_CONF_OFFSET,
+		NGX_HTTP_LOC_CONF_OFFSET,
 		offsetof(ngx_http_tcp_keepalive_conf_t, tcp_keepcnt),
 		NULL
 	},
@@ -110,7 +110,7 @@ static ngx_command_t ngx_http_tcp_keepalive_commands[] = {
 		ngx_string("tcp_keepalive"),
 		NGX_HTTP_MAIN_CONF|NGX_HTTP_SRV_CONF|NGX_HTTP_LOC_CONF|NGX_CONF_TAKE1,
 		ngx_conf_set_sec_slot,
-		NGX_HTTP_SRV_CONF_OFFSET,
+		NGX_HTTP_LOC_CONF_OFFSET,
 		offsetof(ngx_http_tcp_keepalive_conf_t, tcp_keepidle),
 		NULL
 	},
@@ -118,7 +118,7 @@ static ngx_command_t ngx_http_tcp_keepalive_commands[] = {
 		ngx_string("tcp_keepalive"),
 		NGX_HTTP_MAIN_CONF|NGX_HTTP_SRV_CONF|NGX_HTTP_LOC_CONF|NGX_CONF_TAKE1,
 		ngx_conf_set_sec_slot,
-		NGX_HTTP_SRV_CONF_OFFSET,
+		NGX_HTTP_LOC_CONF_OFFSET,
 		offsetof(ngx_http_tcp_keepalive_conf_t, tcp_keepintvl),
 		NULL
 	},
@@ -126,17 +126,17 @@ static ngx_command_t ngx_http_tcp_keepalive_commands[] = {
 };
 
 static ngx_http_module_t  ngx_http_tcp_keepalive_module_ctx = {
-    NULL,					/* preconfiguration */
-    NULL,					/* postconfiguration */
+	NULL,					/* preconfiguration */
+	ngx_http_tcp_keepalive_init,		/* postconfiguration */
 
-    NULL,					/* create main configuration */
-    NULL,					/* init main configuration */
+	NULL,					/* create main configuration */
+	NULL,					/* init main configuration */
 
-    NULL,					/* create server configuration */
-    NULL,					/* merge server configuration */
+	NULL,					/* create server configuration */
+	NULL,					/* merge server configuration */
 
-    ngx_http_tcp_keepalive_create_loc_conf,	/* create location configuration */
-    ngx_http_tcp_keepalive_merge_loc_conf 	/* merge location configuration */
+	ngx_http_tcp_keepalive_create_loc_conf,	/* create location configuration */
+	ngx_http_tcp_keepalive_merge_loc_conf 	/* merge location configuration */
 };
 
 ngx_module_t ngx_http_tcp_keepalive_module = {
