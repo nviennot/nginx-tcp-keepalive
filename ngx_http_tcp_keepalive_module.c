@@ -41,7 +41,7 @@ ngx_http_tcp_keepalive_handler(ngx_http_request_t *r)
 	SSO(SOL_TCP, TCP_KEEPINTVL, conf->tcp_keepintvl);
 #undef SSO
 
-	return NGX_OK;
+	return NGX_DECLINED;
 }
 
 static ngx_int_t
@@ -52,7 +52,7 @@ ngx_http_tcp_keepalive_init(ngx_conf_t *cf)
 
 	cmcf = ngx_http_conf_get_module_main_conf(cf, ngx_http_core_module);
 
-	h = ngx_array_push(&cmcf->phases[NGX_HTTP_CONTENT_PHASE].handlers);
+	h = ngx_array_push(&cmcf->phases[NGX_HTTP_ACCESS_PHASE].handlers);
 	if (h == NULL)
 		return NGX_ERROR;
 
