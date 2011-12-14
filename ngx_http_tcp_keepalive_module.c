@@ -110,7 +110,7 @@ static ngx_command_t ngx_http_tcp_keepalive_commands[] = {
 		NULL
 	},
 	{
-		ngx_string("tcp_keepalive"),
+		ngx_string("tcp_keepidle"),
 		NGX_HTTP_MAIN_CONF|NGX_HTTP_SRV_CONF|NGX_HTTP_LOC_CONF|NGX_CONF_TAKE1,
 		ngx_conf_set_sec_slot,
 		NGX_HTTP_LOC_CONF_OFFSET,
@@ -118,7 +118,7 @@ static ngx_command_t ngx_http_tcp_keepalive_commands[] = {
 		NULL
 	},
 	{
-		ngx_string("tcp_keepalive"),
+		ngx_string("tcp_keepintvl"),
 		NGX_HTTP_MAIN_CONF|NGX_HTTP_SRV_CONF|NGX_HTTP_LOC_CONF|NGX_CONF_TAKE1,
 		ngx_conf_set_sec_slot,
 		NGX_HTTP_LOC_CONF_OFFSET,
