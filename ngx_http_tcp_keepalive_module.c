@@ -36,9 +36,13 @@ ngx_http_tcp_keepalive_handler(ngx_http_request_t *r)
 	}								\
 })
 	SSO(SOL_SOCKET, SO_KEEPALIVE, conf->enable);
-	SSO(SOL_TCP, TCP_KEEPCNT, conf->tcp_keepcnt);
-	SSO(SOL_TCP, TCP_KEEPIDLE, conf->tcp_keepidle);
-	SSO(SOL_TCP, TCP_KEEPINTVL, conf->tcp_keepintvl);
+#ifdef NGX_DARWIN
+	SSO(IPPROTO_TCP, TCP_KEEPALIVE, conf->tcp_keepintvl);
+#else
+	SSO(IPPROTO_TCP, TCP_KEEPCNT, conf->tcp_keepcnt);
+	SSO(IPPROTO_TCP, TCP_KEEPIDLE, conf->tcp_keepidle);
+	SSO(IPPROTO_TCP, TCP_KEEPINTVL, conf->tcp_keepintvl);
+#endif
 #undef SSO
 
 	return NGX_DECLINED;
