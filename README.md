@@ -24,14 +24,6 @@ Configure the Nginx sources with:
 
 And then compile/install with make/make install.
 
-### On Ubuntu
-
-Add the following PPA and install nginx:
-
-    sudo add-apt-repository ppa:nviennot/nginx
-    sudo apt-get update
-    sudo apt-get install nginx
-
 ## Configuration Options
 
 ### tcp_keepalive
